@@ -1,81 +1,48 @@
-module starter::practica_sui {
-    use std::debug::print;
+module starter ::biblioteca {
     use std::string::{String, utf8};
+    use sui::vec_map::{VecMap, Self};
 
-    public struct Usuario has drop{
-        nombre : String,
-        edad: u8,
-        vivo: bool
+    #[error]
+    const ID_YA_EXISTE: vector<u8> = b"El ID del libro ya existe en la biblioteca";
+
+    public struct Biblioteca has key
+    {
+        id: UID,
+        nombre: String,
+        libros: VecMap<u64, Libro>,
     }
 
-
-    /*fun practica() {
-        print(&utf8(b"Hello, World!"));
-        print(&123);
-    }*/
-
-    /*fun condicional()
-    {
-        let edad = 18;
-        if( edad > 18 )
-        {
-            print( &utf8( b"Acceso permitido" ));
-        }
-        else if( edad == 18 )
-        {
-            print( &utf8( b"Acceso permitido" ));
-        }
-        else
-        {
-            print( &utf8( b"Acceso NO permitido" ));
-        }
-        
-    }*/
-
-    /*fun condicionalConParametro( edad: u8 )
-    {
-        //let edad = 18;
-        if( edad > 18 )
-        {
-            print( &utf8( b"Acceso permitido" ));
-        }
-        else if( edad == 18 )
-        {
-            print( &utf8( b"Felicidades" ));
-        }
-        else
-        {
-            print( &utf8( b"Acceso NO permitido" ));
-        }
-        
-    }*/
-
-    fun parametroObjeto( u: Usuario )
-    {
-        //let edad = 18;
-        if( u.edad > 18 )
-        {
-            print( &utf8( b"Acceso permitido" ));
-        }
-        else if( u.edad == 18 )
-        {
-            print( &utf8( b"Felicidades" ));
-        }
-        else
-        {
-            print( &utf8( b"Acceso NO permitido" ));
-        }
-        
+    // Define un tipo simple
+    public struct Libro has store {
+        titulo: String,
+        autor: String,
+        publicacion: u16,
+        disponible: bool
     }
 
-    #[test]
-    fun prueba() {
-        u = Usuario{
-            nombre: &utf8( b"Aris" ),
-            edad: 18,
-            vivo: true
+    // Función para crear una instancia de Biblioteca
+    public fun crear_biblioteca( ctx: &mut TxContext ){
+
+        let biblioteca = Biblioteca {
+        id: object::new(ctx),
+        nombre: utf8(b"Mi Biblioteca"),
+        libros: vec_map::empty(),
+        };
+        
+        transfer::transfer( biblioteca, tx_context::sender(ctx) );
+    }
+
+    public fun agregar_libro( biblioteca: &mut Biblioteca, id: u64, titulo: String, autor: String, publicacion: u16 ){
+
+        assert!(!biblioteca.libros.contains( &id), ID_YA_EXISTE);
+
+        let libro = Libro { 
+            titulo, // es lo mismo que escribir: titulo: titulo, 
+            autor,
+            publicacion,
+            disponible: true
         };
 
-        parametroObjeto( u );
+        biblioteca.libros.insert(id, libro);
     }
 }
