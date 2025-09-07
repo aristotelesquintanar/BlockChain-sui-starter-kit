@@ -1,71 +1,94 @@
-module starter ::biblioteca
+module starter ::minipos
 {
     use std::string::{ String/*, utf8*/ };
     use sui::vec_map::{ VecMap, Self };
 
     #[error]
-    const ID_YA_EXISTE: vector<u8> = b"El ID del libro ya existe en la biblioteca";
+    const ID_ARTICULO_YA_EXISTE: vector<u8> = b"El ID del articulo ya existe en el almacen";
     #[error]
-    const ID_NO_EXISTE: vector<u8> = b"El ID del libro NO existe en la biblioteca";
+    const ID_ARTICULO_NO_EXISTE: vector<u8> = b"El ID del articulo NO existe en el almacen";
 
-    public struct Biblioteca has key
+    // Define la estructura del artículo que se comprará y venderá
+    public struct Articulo has store, drop
+    {
+        codigo: String,
+        descripcion: String,
+        precio: u32,
+        activo: bool
+    }
+
+    // Define la estructura del almacén que contendrá los artículos
+    public struct Almacen has key
     {
         id: UID,
         nombre: String,
-        libros: VecMap<u64, Libro>,
+        articulos: VecMap< u64, Articulo >
     }
 
-    // Define un tipo simple
-    public struct Libro has store, drop
+    // Función para crear un nuevo almacén
+    public fun crear_almacen( nombre: String, ctx: &mut TxContext )
     {
-        titulo: String,
-        autor: String,
-        publicacion: u16,
-        disponible: bool
-    }
-
-    // Función para crear una instancia de Biblioteca
-    public fun crear_biblioteca( nombre: String, ctx: &mut TxContext )
-    {
-        let biblioteca = Biblioteca
+        let almacen = Almacen
         {
             id: object::new(ctx),
-            nombre, //nombre: utf8(b"Mi Biblioteca"),
-            libros: vec_map::empty(),
-        };
-        
-        transfer::transfer( biblioteca, tx_context::sender(ctx) );
-    }
-
-    public fun agregar_libro( biblioteca: &mut Biblioteca, id: u64, titulo: String, autor: String, publicacion: u16 )
-    {
-        assert!( !biblioteca.libros.contains( &id ), ID_YA_EXISTE );
-
-        let libro = Libro { 
-            titulo, // es lo mismo que escribir: titulo: titulo, 
-            autor,
-            publicacion,
-            disponible: true
+            nombre, //nombre: utf8(b"Almacen Central"),
+            articulos: vec_map::empty(),
         };
 
-        biblioteca.libros.insert(id, libro);
+        transfer::transfer( almacen, tx_context::sender(ctx) );
     }
 
-    public fun eliminar_libro( biblioteca: &mut Biblioteca, id: u64 )
+    // Función para eliminar el almacén
+    public fun eliminar_almacen( almacen: Almacen )
     {
-        assert!( biblioteca.libros.contains( &id ), ID_NO_EXISTE );
-        biblioteca.libros.remove( &id );
-    }
-
-    public fun actualizar_disponibilidad( biblioteca: &mut Biblioteca, id: u64 )
-    {
-        assert!( biblioteca.libros.contains( &id ), ID_NO_EXISTE );
-        let libro = biblioteca.libros.get_mut( &id );
-        libro.disponible = !libro.disponible;
-    }
-
-    public fun eliminar_biblioteca( biblioteca: Biblioteca )
-    {
-        let Biblioteca { id, libros: _, nombre: _ } = biblioteca;
+        let Almacen { id, nombre: _, articulos: _ } = almacen;
         id.delete();
     }
+
+    // Función para agregar un nuevo artículo al almacén
+    public fun agregar_articulo( almacen: &mut Almacen, id: u64, codigo: String, descripcion: String, precio: u32 )
+    {
+        assert!( !almacen.articulos.contains( &id ), ID_ARTICULO_YA_EXISTE );
+
+        let articulo = Articulo { 
+            codigo,
+            descripcion,
+            precio,
+            activo: true
+        };
+        almacen.articulos.insert(id, articulo);
+    }
+
+    // Función para bloquear/desbloquear un artículo en el almacén
+    public fun actualizar_disponibilidad_articulo( almacen: &mut Almacen, id: u64 )
+    {
+        assert!( almacen.articulos.contains( &id ), ID_ARTICULO_NO_EXISTE );
+        let articulo = almacen.articulos.get_mut( &id );
+        articulo.activo = !articulo.activo;
+    }
+
+    // Función para actualizar el precio de un artículo en el almacén
+    public fun sui client call --package 0xd12710badd13c605cc27fab9187973c6be161d93c5973730cef5949bbad5e653 --module minipos --function actualizar_precio_articulo --args 0x259e0e49697ac817e0dcc38d6ae52dd50c8e955b547c8e948d2f0111791bfbb6 2 12020( almacen: &mut Almacen, id: u64, nuevo_precio: u32 )
+    {
+        assert!( almacen.articulos.contains( &id ), ID_ARTICULO_NO_EXISTE );
+        let articulo = almacen.articulos.get_mut( &id );
+        articulo.precio = nuevo_precio;
+    }
+
+    // Función para actualizar todos los datos del artículo en el almacén
+    public fun actualizar_articulo( almacen: &mut Almacen, id: u64, codigo: String, descripcion: String, precio: u32 )
+    {
+        assert!( almacen.articulos.contains( &id ), ID_ARTICULO_NO_EXISTE );
+        let articulo = almacen.articulos.get_mut( &id );
+        articulo.codigo = codigo;
+        articulo.descripcion = descripcion;
+        articulo.precio = precio;
+    }
+
+    // Función para eliminar un artículo del almacén
+    public fun eliminar_articulo( almacen: &mut Almacen, id: u64 )
+    {
+        assert!( almacen.articulos.contains( &id ), ID_ARTICULO_NO_EXISTE );
+        almacen.articulos.remove( &id );
+    }
+}
