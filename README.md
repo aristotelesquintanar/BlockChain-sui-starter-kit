@@ -1,168 +1,179 @@
 ![banner](./imagenes/banner.jpg)
-# Sui Starter Kit Backend
 
-Sui es una plataforma de blockchain y contratos inteligentes de capa 1 diseñada para que la propiedad de activos digitales sea rápida, privada, segura y accesible.
+# Sui Starter Kit - Sistema de Gestión de Inventario
 
-Move es un lenguaje de código abierto para escribir paquetes seguros para manipular objetos en blockchain. Permite bibliotecas, herramientas y comunidades de desarrolladores comunes en blockchains con modelos de datos y ejecución muy diferentes.
+## 📋 Descripción del Proyecto
 
-## Proyecto base
+Este es un pequeño proyecto basado en **Sui Starter Kit** que implementa un sistema de gestión de inventario (MiniPOS) desarrollado en **Move**.  Usacontratos inteligentes en la blockchain Sui. El proyecto incluye múltiples ejemplos y módulos que demuestran las capacidades fundamentales de desarrollo en Sui.
 
-Puedes usar este repositorio como tu punto de partida para el desarrollo de tu proyecto backend.
+## 🏗️ Arquitectura del Proyecto
 
-### Abriendo con Codespaces
+### Estructura de Archivos
+```
+BlockChain-sui-starter-kit/
+├── .devcontainer/          # Configuración de desarrollo (por lo que entendí)
+│   ├── devcontainer.json   # Configuración del contenedor (aunque no le entendí del todo)
+│   └── setup.sh            # Script de instalación automática (aunque no le entendí del todo)
+├── imagenes/               # Recursos gráficos (venían, realmente solo los usa el README(original).md)
+│   ├── banner.jpg
+│   ├── codespaces.png
+│   └── fork.png
+├── sources/                # Código fuente Move
+│   ├── starter.move        # Módulo principal - Sistema MiniPOS
+│   ├── starter.move.bak    # Backup - Ejemplos iniciales de práctica
+│   └── starter.move.bak2   # Backup - Sistema de biblioteca visto en clases
+├── Move.toml               # Configuración del paquete Move (aún no le entiendo bien)
+└── README(original).md     # README.md original con instrucciones
+└── README.md               # Este archivo
+```
 
-* Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
-    
-    ![fork](./imagenes/fork.png)
-    * Puedes renombrar el repositorio a lo que sea que se ajuste con tu proyecto.
-* Presiona el botón **`<> Code`** y luego haz click en la sección **`Codespaces`**
+## 🚀 Funcionalidades Implementadas
 
-    ![codespaces](./imagenes/codespaces.png)
+### 1. Sistema MiniPOS (Módulo Principal)
+El archivo `starter.move` contiene un sistema completo de gestión de inventario con las siguientes características:
 
-* Por último, presiona **`Create codespace on master`**. Esto abrirá el proyecto en una interfaz gráfica de Visual Studio Code e instalará todas las herramientas necesarias para desarrollar con Move.
+#### Estructuras de Datos
+- **`Articulo`**: Representa un producto con código, descripción, precio y estado activo
+- **`Almacen`**: Contenedor principal que almacena artículos usando VecMap
 
-### Contenido
+#### Funciones Principales
+- ✅ `crear_almacen()` - Crear un nuevo almacén
+- ✅ `eliminar_almacen()` - Eliminar un almacén existente
+- ✅ `agregar_articulo()` - Añadir productos al inventario
+- ✅ `actualizar_disponibilidad_articulo()` - Activar/desactivar productos
+- ✅ `actualizar_precio_articulo()` - Modificar precios
+- ✅ `actualizar_articulo()` - Actualizar todos los datos de un producto
+- ✅ `eliminar_articulo()` - Remover productos del inventario
 
-Este proyecto instala las siguientes herramientas:
-* [SuiUp](https://github.com/Mystenlabs/suiup/) (Administrador de versiones).
-* [Sui CLI](https://docs.sui.io/references/cli/client) (Instalada usando SuiUp).
-* Extensión de VS Code [Move](https://marketplace.visualstudio.com/items?itemName=mysten.move).
-* Extensión de VS Code [Move Formatter](https://marketplace.visualstudio.com/items?itemName=mysten.prettier-move).
+#### Manejo de Errores
+- Validación de IDs únicos para artículos
+- Verificación de existencia antes de operaciones
+- Mensajes de error personalizados
 
-Todas las herramientas fueron desarrolladas por [MystenLabs](https://www.mystenlabs.com/).
+### 2. Módulo de Práctica (starter.move.bak)
+Incluye ejemplos educativos de:
+- Estructuras de datos básicas (`Usuario`)
+- Funciones con parámetros
+- Lógica condicional
+- Tests unitarios
 
-## Ejecutando el proyecto
+### 3. Sistema de Biblioteca (starter.move.bak2)
+Implementación alternativa que demuestra:
+- Gestión de libros con título, autor y año de publicación
+- Control de disponibilidad
+- Operaciones CRUD completas
 
-Ingresa a tu terminal y ejecuta el siguiente comando:
+## 🛠️ Tecnologías Utilizadas
 
-```sh
+### Blockchain y Contratos Inteligentes
+- **Sui Blockchain**: Plataforma de capa 1 para activos digitales
+- **Move Language**: Lenguaje de programación para contratos seguros
+- **Sui CLI**: Herramientas de línea de comandos
+
+### Herramientas de Desarrollo
+- **VS Code Extensions**:
+  - Move Language Support
+  - Move Formatter (Prettier)
+
+### Entorno de Desarrollo
+- **GitHub Codespaces**: Desarrollo en la nube
+
+## 🚀 Configuración y Uso
+
+### Opción 1: GitHub Codespaces (Recomendado)
+1. **Fork** este repositorio a tu cuenta
+2. Haz clic en **`<> Code`** → **`Codespaces`**
+3. Selecciona **`Create codespace on master`**
+4. El entorno se configurará automáticamente
+
+### Opción 2: Desarrollo Local
+1. Instala SuiUp:
+```bash
+curl -sSfL https://raw.githubusercontent.com/Mystenlabs/suiup/main/install.sh | sh
+```
+
+2. Instala Sui CLI:
+```bash
+suiup install sui -y
+```
+
+3. Instala las extensiones de VS Code:
+   - `mysten.move`
+   - `mysten.prettier-move`
+
+## 🧪 Ejecución y Pruebas
+
+### Ejecutar Tests
+```bash
 sui move test
 ```
 
-Deberías de obtener el siguiente resultado:
-```sh
-INCLUDING DEPENDENCY Bridge
-INCLUDING DEPENDENCY SuiSystem
-INCLUDING DEPENDENCY Sui
-INCLUDING DEPENDENCY MoveStdlib
-BUILDING Intro
-Running Move unit tests
-[debug] "Hello, World!"
-[ PASS    ] introduccion::practica_sui::prueba
-Test result: OK. Total tests: 1; passed: 1; failed: 0
+### Compilar el Proyecto
+```bash
+sui move build
 ```
 
-¡Felicidades! :partying_face: Acabas de ejecutar de manera exitosa tu primer módulo Move. Ahora, analicemos que está pasando.
-
-En la carpeta `sources` podemos encontrar un archivo llamado `starter.move`. Este archivo, como lo indica la extensión, contiene el código de Move que estamos ejecutando. En este caso, es un **módulo** con una **función** y un **test**.
-
-## Estructura de un módulo
-
-La estructura de un **módulo** es la siguiente:
-
-```rust
-module direccion::nombre_modulo {
-    // ...  resto del código
-}
+### Desplegar en Testnet
+```bash
+sui client publish
 ```
 
-1. Declaración del módulo con la palabra clave `module`.
-2. Dirección en la que se desplegará el módulo.
-    La dirección la encontramos en el archivo de configuraciones `Move.toml`, en el apartado de `addresses`. En nuestro caso:
-    ```toml
-    [addresses]
-    starter = "0x0"
-    ```
-3. Nombre del módulo, en nuestro caso: `practica_sui`
+## 📚 Conceptos de Move Demostrados
 
-Por lo que nuestro código luce así:
-```rust
-module introduccion::practica_sui {
-    // ...  resto del código
-}
+### Estructuras de Datos
+- **`struct`**: Definición de tipos personalizados
+- **`has`**: Capacidades de los tipos (store, drop, key)
+- **`UID`**: Identificador único de objetos en Sui
+
+### Funciones y Módulos
+- **`module`**: Organización del código
+- **`public fun`**: Funciones accesibles externamente
+- **`#[test]`**: Funciones de prueba
+
+### Manejo de Memoria
+- **`transfer::transfer()`**: Transferencia de propiedad
+- **`object::new()`**: Creación de nuevos objetos
+- **`id.delete()`**: Liberación de memoria
+
+### Colecciones
+- **`VecMap`**: Mapa vectorial para almacenamiento eficiente
+- **`vec_map::empty()`**: Inicialización de colecciones
+
+## 🔧 Configuración del Proyecto
+
+### Move.toml
+```toml
+[package]
+name = "Intro"
+version = "0.0.1"
+edition = "2024.beta"
+
+[addresses]
+starter = "0x0"
+
+[dependencies]
+# Sin dependencias externas - usa solo las librerías estándar
 ```
 
-Después, vienen los `imports` o los módulos/librerías que estamos importando para que el nuestro funcione. En nuestro código, estamos importando dos funciones de la librería principal de **Move**:
+## 🎯 Casos de Uso
 
-```rust
-    use std::debug::print;
-    use std::string::utf8;
-```
+Este proyecto es ideal para:
+- **Aprendizaje**: Entender conceptos básicos de Move y Sui
+- **Prototipado**: Base para sistemas de inventario más complejos
+- **Educación**: Ejemplos prácticos de desarrollo blockchain
+- **Desarrollo**: Punto de partida para aplicaciones DeFi o NFT
 
-Se importa la función para imprimir en consola, así como una función para convertir cadenas de texto a un formato aceptado por la función anterior.
+## 🔄 Evolución del Proyecto
 
-La siguiente sección de código incluye nuestra primera función:
+El proyecto muestra la evolución del desarrollo:
+1. **starter.move.bak**: Ejemplos básicos y práctica
+2. **starter.move.bak2**: Sistema de biblioteca
+3. **starter.move**: Sistema MiniPOS completo y funcional
 
-```rust
-    fun practica() {
-        print(&utf8(b"Hello, World!"));
-    }
-```
+## 📖 Recursos Adicionales
 
-En ella, hacemos uso de ambas librerías importadas. La función simplemente imprime la cadena `Hello, World!` en la consola.
-
-Y por último, necesitamos una forma de ejecutar esta función. Por ahora lo estamos haciendo a través de un **bloque de pruebas** o `test`:
-
-```rust
-    #[test]
-    fun prueba() {
-        practica();
-    }
-```
-
-Al nosotros haber ejecutado `sui move test` le estamos diciendo a la CLI que ejecute todas las funciones que tengan un bloque `[#test]`, en este caso, ejecuta nuestra función `prueba`, la cual a su vez llama a la función `practica`.
-
-## Output
-
-Por último, analicemos el resultado que se imprimió en la consola.
-
-```sh
-INCLUDING DEPENDENCY Bridge
-INCLUDING DEPENDENCY SuiSystem
-INCLUDING DEPENDENCY Sui
-INCLUDING DEPENDENCY MoveStdlib
-BUILDING Intro
-Running Move unit tests
-[debug] "Hello, World!"
-[ PASS    ] introduccion::practica_sui::prueba
-Test result: OK. Total tests: 1; passed: 1; failed: 0
-```
-
-El primer bloque de texto nos indica que está incluyendo las dependencias necesarias para ejecutar el proyecto:
-
-```sh
-INCLUDING DEPENDENCY Bridge
-INCLUDING DEPENDENCY SuiSystem
-INCLUDING DEPENDENCY Sui
-INCLUDING DEPENDENCY MoveStdlib
-BUILDING Intro
-```
-
-Estas dependencias son las dependencias básicas que todo paquete en **Move** necesita, así que el compilador las importa de manera automática.
-Puedes comprobar que no estamos importando ninguna dependencia en el archivo `Move.toml` en el apartado `[dependencies]`.
-
-La siguiente línea en el output nos indica que se ejecutaran las pruebas unitarias en el archivo, recuerda que esto es porque corrimos el comando `sui move test`:
-```
-Running Move unit tests
-```
-
-Después, obtenemos el mensaje que ejecuta la función prueba, en nuestro caso, la línea de texto `Hello, World!`:
-```sh
-[debug] "Hello, World!"
-```
-
-Ahora, en la siguiente línea, podemos obtener información de exactamente que funciones se ejecutaron:
-```sh
-[ PASS    ] starter::practica_sui::prueba
-```
-La estructura es algo así:
-```rust
-direccion::nombre_modulo::funcion
-```
-Con esto, podemos comprobar que la función que se ejecutó fue `prueba`.
-
-Por último, obtenemos información sobre las pruebas unitarias, cómo cuantas se ejecutaron y cuantas se pasaron:
-
-```sh
-Test result: OK. Total tests: 1; passed: 1; failed: 0
-```
+- [SUI GitBook](https://waylearn.gitbook.io)
+- [Documentación Oficial de Sui](https://docs.sui.io/)
+- [Guía de Move](https://move-language.github.io/move/)
+- [Sui CLI Reference](https://docs.sui.io/references/cli/client)
+- [MystenLabs GitHub](https://github.com/Mystenlabs)
