@@ -68,7 +68,7 @@ module starter ::minipos
     }
 
     // Función para actualizar el precio de un artículo en el almacén
-    public fun sui client call --package 0xd12710badd13c605cc27fab9187973c6be161d93c5973730cef5949bbad5e653 --module minipos --function actualizar_precio_articulo --args 0x259e0e49697ac817e0dcc38d6ae52dd50c8e955b547c8e948d2f0111791bfbb6 2 12020( almacen: &mut Almacen, id: u64, nuevo_precio: u32 )
+    public fun actualizar_precio_articulo( almacen: &mut Almacen, id: u64, nuevo_precio: u32 )
     {
         assert!( almacen.articulos.contains( &id ), ID_ARTICULO_NO_EXISTE );
         let articulo = almacen.articulos.get_mut( &id );
